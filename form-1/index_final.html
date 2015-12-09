@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- CSS -->
+        
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="assets/css/form-elements.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+
+    </head>
+
+    <body>
+       <script type = "text/javascript">
+                //=================================================
+
+var Base64 = {
+// private property
+_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+// public method for encoding
+encode : function (input) {
+    var output = "";
+    var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+    var i = 0;
+
+    input = Base64._utf8_encode(input);
+
+    while (i < input.length) {
+
+        chr1 = input.charCodeAt(i++);
+        chr2 = input.charCodeAt(i++);
+        chr3 = input.charCodeAt(i++);
+
+        enc1 = chr1 >> 2;
+        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+        enc4 = chr3 & 63;
+
+        if (isNaN(chr2)) {
+            enc3 = enc4 = 64;
+        } else if (isNaN(chr3)) {
+            enc4 = 64;
+        }
+
+        output = output +
+        Base64._keyStr.charAt(enc1) + Base64._keyStr.charAt(enc2) +
+        Base64._keyStr.charAt(enc3) + Base64._keyStr.charAt(enc4);
+
+    }
+
+    return output;
+},
+
+// public method for decoding
+decode : function (input) {
+    var output = "";
+    var chr1, chr2, chr3;
+    var enc1, enc2, enc3, enc4;
+    var i = 0;
+
+    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+    while (i < input.length) {
+
+        enc1 = Base64._keyStr.indexOf(input.charAt(i++));
+        enc2 = Base64._keyStr.indexOf(input.charAt(i++));
+        enc3 = Base64._keyStr.indexOf(input.charAt(i++));
+        enc4 = Base64._keyStr.indexOf(input.charAt(i++));
+
+        chr1 = (enc1 << 2) | (enc2 >> 4);
+        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+        chr3 = ((enc3 & 3) << 6) | enc4;
+
+        output = output + String.fromCharCode(chr1);
+
+        if (enc3 != 64) {
+            output = output + String.fromCharCode(chr2);
+        }
+        if (enc4 != 64) {
+            output = output + String.fromCharCode(chr3);
+        }
+
+    }
+
+    output = Base64._utf8_decode(output);
+
+    return output;
+
+},
+
+// private method for UTF-8 encoding
+_utf8_encode : function (string) {
+    string = string.replace(/\r\n/g,"\n");
+    var utftext = "";
+
+    for (var n = 0; n < string.length; n++) {
+
+        var c = string.charCodeAt(n);
+
+        if (c < 128) {
+            utftext += String.fromCharCode(c);
+        }
+        else if((c > 127) && (c < 2048)) {
+            utftext += String.fromCharCode((c >> 6) | 192);
+            utftext += String.fromCharCode((c & 63) | 128);
+        }
+        else {
+            utftext += String.fromCharCode((c >> 12) | 224);
+            utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+            utftext += String.fromCharCode((c & 63) | 128);
+        }
+
+    }
+
+    return utftext;
+},
+
+// private method for UTF-8 decoding
+_utf8_decode : function (utftext) {
+    var string = "";
+    var i = 0;
+    var c = c1 = c2 = 0;
+
+    while ( i < utftext.length ) {
+
+        c = utftext.charCodeAt(i);
+
+        if (c < 128) {
+            string += String.fromCharCode(c);
+            i++;
+        }
+        else if((c > 191) && (c < 224)) {
+            c2 = utftext.charCodeAt(i+1);
+            string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+            i += 2;
+        }
+        else {
+            c2 = utftext.charCodeAt(i+1);
+            c3 = utftext.charCodeAt(i+2);
+            string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+            i += 3;
+        }
+
+    }
+    return string;
+}
+}
+//=================Del Whitelist=================
+
+            function myFunction(response) {
+                var password = document.getElementById("form-password");
+                var whitelist = document.getElementById("form-udi");
+                var domainName = document.getElementById("form-domain-name");
+                
+                var json_resp = eval( "'" + response + "'" );
+                var jparse = JSON.parse(json_resp);
+var myarr = JSON.stringify(jparse["snbi-domain"]["device-list"][0]["devices"]);
+                var pars_resp = eval( "'" + myarr + "'" );
+                var pars = JSON.parse(pars_resp);
+                var text = "";
+                for (i = 0; i < pars.length; i++) {
+                    text += pars[i]["device-id"] + "\n";
+                }
+                var mydomain = JSON.stringify(jparse["snbi-domain"]["domain-name"]);
+                password.value = "";
+                whitelist.value="";
+                domainName.value = "";
+                whitelist.value = text;
+                domainName.value = JSON.parse(mydomain);
+            }
+
+
+            function get_whitelist(){
+                var usrName = document.getElementById("form-user-name");
+                var password = document.getElementById("form-password");
+                var regIP = document.getElementById("form-reg-ip");
+                var uname = usrName.value;
+                var pwd = password.value; 
+
+                if (usrName.value.length == 0 || regIP.value.length == 0) {
+                    alert("Invalid Registrar IP or credentials");
+                    return;
+                }
+    var url ="http://"+regIP.value+":8181/restconf/config/snbi:snbi-domain/";
+                var xhttp_g = new XMLHttpRequest();
+                xhttp_g.onreadystatechange = function() {
+                if (xhttp_g.readyState == 4 && xhttp_g.status == 200) {
+                     myFunction(xhttp_g.responseText);
+                }};
+                xhttp_g.open("GET",url , false);
+xhttp_g.setRequestHeader("Authorization", "Basic " + Base64.encode(uname + ":" + pwd));
+                xhttp_g.setRequestHeader("Content-Type","application/json");
+                xhttp_g.send();
+            }
+
+//==================Del Whitelist=================
+
+           function delete_whitelist(){
+/*
+                var usrName = document.getElementById("form-user-name");
+                var password = document.getElementById("form-password");
+                var regIP = document.getElementById("form-reg-ip");
+                var uname = usrName.value;
+                var pwd = password.value; 
+
+                if (usrName.value.length == 0 || regIP.value.length == 0) {
+                    alert("Invalid Registrar IP or credentials");
+                    return;
+                }
+    var url ="http://"+regIP.value+":8181/restconf/config/snbi:snbi-domain/";
+                var xhttp_d = new XMLHttpRequest();
+                xhttp_d.onreadystatechange = function() {
+                alert(xhttp_d.status);
+                if (xhttp_d.readyState == 4 && xhttp_d.status == 200) {
+                     alert(xhttp_d.responseText);
+                }};
+                xhttp_d.open("DELETE",url);
+xhttp_d.setRequestHeader("Authorization", "Basic " + Base64.encode(uname + ":" ++
+ pwd));
+                xhttp_d.setRequestHeader("Content-Type","application/json");
+                xhttp_d.send();
+*/
+            }
+
+
+//===================del Whitelist==================
+            // from textBoxes.html
+            function conf_whitelist(){
+                var usrName = document.getElementById("form-user-name");
+                var password = document.getElementById("form-password");
+                var regIP = document.getElementById("form-reg-ip");
+                var domainName = document.getElementById("form-domain-name");
+                var whitelist = document.getElementById("form-udi");
+
+                if (usrName.value.length == 0 || regIP.value.length == 0 || 
+                        domainName.value.length == 0 || 
+                        whitelist.value.length == 0 ) {
+                    alert("Invalid Arguments");
+                    return;
+                }
+                var udi_array = whitelist.value.split("\n");
+                var domain = domainName.value;
+                var uname = usrName.value;
+                var pwd = password.value; 
+                var device_udi = [];
+                for(var k=0;k<udi_array.length;k++) {
+                        item = {};
+                        item ["device-id"] =udi_array[k] ;
+                        device_udi.push(item);
+                }
+
+                var device_list_arr = [];
+                item_1 = {};
+                item_1 ["list-name"] = "demo list";
+                item_1 ["list-type"] = "white";
+                item_1 ["active"] = "true";
+                item_1 ["devices"] = device_udi;
+                device_list_arr.push(item_1);
+
+                snbi_domain_info = {};
+                snbi_domain_info["domain-name"] = domain;
+
+                snbi_domain_info["device-list"] = device_list_arr;
+
+                snbi_domain = {};
+                snbi_domain ["snbi-domain"] = snbi_domain_info;
+
+                //=================================================
+
+
+var url ="http://"+regIP.value+":8181/restconf/config/";
+//var url ="http://"+regIP.value+":8181/restconf/config/snbi:snbi-domain";
+//alert(url);
+//xhttp.setRequestHeader("Authorization", "Basic " + Base64.encode(usrName.value+ ":" + password.value));
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      alert(xhttp.status);
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+    } else if(xhttp.status == 204) {
+        alert("SUCCESS");
+    }
+  };
+  xhttp.open("POST",url , false);
+xhttp.setRequestHeader("Authorization", "Basic " + Base64.encode(uname + ":" + pwd));
+xhttp.setRequestHeader("Content-Type","application/json");
+  xhttp.send(JSON.stringify(snbi_domain));
+            } // end sayHi
+         </script>
+
+        <!-- Top content -->
+    
+        <div class="top-content">
+        	
+            <div class="inner-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-5 form-box">
+                        	<div class="form-top">
+                        		<div class="form-top-left">
+                        			<h3 style="color:orange;"><b>Submit</b></h3>
+                            		<p style="color:orange;"> White list
+                                    information:</p>
+                        		</div>
+                        		<div class="form-top-right">
+                                    <img src="assets/img/logo.png"></img>
+                        		</div>
+                            </div>
+                            <div class="form-bottom">
+			                    <form role="form" action="" method="post" class="registration-form">
+			                    	<div class="form-group">
+			                    		<label class="sr-only"
+                                        for="form-user-name">User name</label>
+			                        	<input type="text" name="form-user-name"
+                                        placeholder="User name..."
+                                        class="form-user-name form-control"
+                                        id="form-user-name"
+                                        style="width:350px;float:left">
+                                        <a href="#"
+                                        data-toggle="tooltip" title="Eg: admin">
+                                        <img
+                                        src="assets/img/help.png"
+                                        style="float:right;" height="25"
+                                        width="25"/>
+                                        </a>
+                                        </br>
+                                        </br>
+			                        </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" 
+                                        for="form-password">Password</label>
+                                    <input type="password" name="form-password"
+                                    class="form-password  form-control"
+                                    id="form-password" placeholder="Password"
+                                        style="width:350px;float:left">
+                                        <a href="#"
+                                        data-toggle="tooltip" title="Eg: admin">
+                                        <img
+                                        src="assets/img/help.png"
+                                        style="float:right;" height="25"
+                                        width="25"/>
+                                        </a>
+                                        </br>
+                                        </br>
+
+                                    </div>
+
+			                        <div class="form-group">
+			                        	<label class="sr-only"
+                                        for="form-domain-name">Domain name</label>
+			                        	<input type="text"
+                                        name="form-domain-name"
+                                        placeholder="Domain name..."
+                                        class="form-domain-name form-control"
+                                        id="form-domain-name" style="width:350px;float:left">
+                                        <a href="#"
+                                        data-toggle="tooltip" title="Eg:  cisco.com">
+                                        <img
+                                        src="assets/img/help.png"
+                                        style="float:right;" height="25"
+                                        width="25"/>
+                                        </a>
+                                        </br>
+                                        </br>
+
+			                        </div>
+			                        <div class="form-group">
+			                        	<label class="sr-only"
+                                        for="form-reg-ip">Registrar IP</label>
+			                        	<input type="text" name="form-reg-ip"
+                                        placeholder="Registrar IP"
+                                        class="form-reg-ip form-control"
+                                        id="form-reg-ip" style="width:350px;float:left">
+                                        <a href="#"
+                                        data-toggle="tooltip" title="Eg: 10.64.69.123">
+                                        <img
+                                        src="assets/img/help.png"
+                                        style="float:right;" height="25"
+                                        width="25"/>
+                                        </a>
+                                        </br>
+                                        </br>
+
+			                        </div>
+			                        <div class="form-group">
+			                        	<label class="sr-only" for="form-udi">Device UDI</label>
+			                        	<textarea name="form-udi"
+                                        placeholder="Device UDI..." 
+			                        				class="form-udi
+                                                    form-control" id="form-udi" style="width:350px;float:left"></textarea>
+			                        <a href="#"
+                                        data-toggle="tooltip" title="Eg: UDI-3&#13;UDI-2">
+                                        <img
+                                        src="assets/img/help.png"
+                                        style="float:right;" height="25"
+                                        width="25"/>
+                                        </a>
+                                        </br>
+                                        </br>
+                                        </br>
+                                        </br>
+                                    </div>
+			                        <button type="text" class="btn" onclick =
+                                    "conf_whitelist()" style="float:left;">Enable</button>
+                                    <button type="text" class="btn" onclick =
+                                    "get_whitelist()" style="margin-left: 70px; width:100px">Get</button>
+   <button type="text" class="btn" onclick =
+                                    "delete_whitelist()" style="float:right;">Delete</button>
+			                    </form>
+		                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+
+        <!-- Javascript -->
+        <script src="assets/js/jquery-1.11.1.min.js"></script>
+        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/js/jquery.backstretch.min.js"></script>
+        <script src="assets/js/retina-1.1.0.min.js"></script>
+        <script src="assets/js/scripts.js"></script>
+        
+        <!--[if lt IE 10]>
+            <script src="assets/js/placeholder.js"></script>
+        <![endif]-->
+
+    </body>
+
+</html>
